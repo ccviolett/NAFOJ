@@ -112,7 +112,9 @@
         float: none;
     }
 
-    /* items become sidebar rows; active marker moves from top to left edge */
+    /* items become sidebar rows; active marker moves from top to left edge.
+       Hover feedback slimmed to background only (border-color/color
+       transitions ran on every mouse sweep and caused motion fatigue). */
     .nav .nav__item {
         display: block;
         line-height: 1.5;
@@ -123,6 +125,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        transition: background .15s ease-out;
     }
 
     .nav .nav__item:hover {
@@ -147,19 +150,13 @@
     }
 
     /* nav menus fly out to the right of the sidebar (see nav.html:
-       data-dropdown-pos="right bottom"); give them a slide-in feel */
+       data-dropdown-pos="right bottom"). No extra animation here: the
+       upstream tether-drop scale (0.1s) already provides feedback, and
+       stacking a second transform caused motion fatigue. */
     .drop.nav__dropdown .drop-content {
         max-height: 70vh;
         overflow-y: auto;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-        animation: nafoj-flyout 0.16s ease-out;
-    }
-
-    @keyframes nafoj-flyout {
-        from {
-            opacity: 0;
-            transform: translateX(-8px);
-        }
     }
 
     /* top strips no longer needed; mobile header stays hidden on desktop */
@@ -184,5 +181,16 @@
     .nav .dropdown-target.menu {
         max-height: 60vh;
         overflow-y: auto;
+    }
+}
+
+/* Accessibility: users asking for reduced motion get a fully static sidebar. */
+@media (prefers-reduced-motion: reduce) {
+    .nav,
+    .nav *,
+    .drop.nav__dropdown,
+    .drop.nav__dropdown * {
+        transition: none !important;
+        animation: none !important;
     }
 }
