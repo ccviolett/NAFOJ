@@ -90,6 +90,7 @@ export interface Udoc extends Record<string, any> {
     loginat: Date;
     ip: string[];
     loginip: string;
+    mustChangePassword?: boolean;
 }
 
 export interface VUdoc {

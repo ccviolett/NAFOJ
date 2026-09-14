@@ -47,6 +47,22 @@ export const coreScripts: MigrationScript[] = [
         }
         const ddoc = await domain.get('system');
         if (!ddoc) await domain.add('system', 1, 'Hydro', 'Welcome to Hydro!');
+        // NAFOJ: bootstrap a super admin with a random password, printed once
+        // to the console. The account is flagged so the user layer forces a
+        // password change on first login (cleared by the change_password op).
+        const admin = await user.getByUname('system', 'admin');
+        if (!admin && !await db.collection('user').findOne({ priv: PRIV.PRIV_ALL })) {
+            const password = randomstring(16);
+            const uid = await user.create('admin@nafoj.local', 'admin', password, undefined, '127.0.0.1', PRIV.PRIV_ALL);
+            await db.collection('user').updateOne({ _id: uid }, { $set: { mustChangePassword: true } });
+            console.log('\n==================== NAFOJ bootstrap ===================='
+                + '\n  Super admin account created:'
+                + `\n    username: admin`
+                + `\n    password: ${password}`
+                + '\n  SAVE it now; you will be forced to change this password'
+                + '\n  on first login.'
+                + '\n==========================================================\n');
+        }
         await welcome();
         return true;
     },

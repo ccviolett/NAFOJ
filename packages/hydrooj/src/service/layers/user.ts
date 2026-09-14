@@ -17,5 +17,18 @@ export default async (ctx: KoaContext, next) => {
         await UserModel.setById(user._id, { loginip: ctx.request.ip });
     }
     ctx.HydroContext.user = await user.private();
+    // NAFOJ: force the bootstrap admin to change the initial random password
+    // before anything else. Cleared by the change_password operation.
+    if (user._udoc.mustChangePassword && user._id !== 0) {
+        const path = ctx.request.path;
+        const allowed = path.startsWith('/login') || path.startsWith('/logout')
+            || path.includes('/user/sudo') || path.includes('/home/security')
+            || path.startsWith('/static') || path === '/favicon.ico'
+            || path.startsWith('/fs');
+        if (!allowed) {
+            ctx.HydroContext.response.redirect = '/home/security';
+            return;
+        }
+    }
     await next();
 };
