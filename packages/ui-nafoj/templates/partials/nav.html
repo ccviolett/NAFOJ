@@ -17,7 +17,9 @@
   <div class="nafoj-nav__spacer"><div class="columns clearfix">
     <ol class="nav__list nafoj-nav__brand clearfix">
       <li class="nav__list-item">
-        <a href="/"><img class="nav__logo" src="{{ ctx.setting.get('ui-default.nav_logo_dark') }}"></a>
+        {# NAFOJ: keep students inside their current class domain instead of
+           dropping back to the shared system lobby. #}
+        <a href="{{ url('homepage') }}"><img class="nav__logo" src="{{ ctx.setting.get('ui-default.nav_logo_dark') }}"></a>
       </li>
     </ol>
   </div></div>
@@ -103,12 +105,16 @@
               <span class="icon icon-security"></span> {{ _('home_security') }}
             </a>
           </li>
+          {# NAFOJ: multi-class isolation — only site admins may see the
+             cross-domain "My Domains" page; students stay unaware of other classes. #}
+          {% if handler.user.hasPriv(PRIV.PRIV_VIEW_ALL_DOMAIN) %}
           <li class="menu__seperator"></li>
           <li class="menu__item">
             <a href="{{ url('home_domain') }}" class="menu__link">
               <span class="icon icon-web"></span> {{ _('My Domains') }}
             </a>
           </li>
+          {% endif %}
           {% if handler.user.hasPriv(PRIV.PRIV_CREATE_FILE) %}
             <li class="menu__item">
               <a href="{{ url('home_files') }}" class="menu__link">

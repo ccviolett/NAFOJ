@@ -1,21 +1,10 @@
-/* NAFOJ onboarding checklist card (homepage, super admins only). */
-.nafoj-guidance__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nafoj-guidance__list > li {
+/* NAFOJ onboarding checklist card (homepage, super admins only).
+ * Row chrome (padding, separators, header/footer) comes from the upstream
+ * section conventions used in the template; only states and layout live here. */
+.nafoj-guidance__item {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 8px;
-    padding: 6px 0;
-    border-bottom: 1px dashed rgba(127, 127, 127, 0.25);
-    color: rgba(0, 0, 0, 0.55);
-}
-
-.nafoj-guidance__list > li:last-child {
-    border-bottom: none;
 }
 
 .nafoj-guidance__icon {
@@ -24,48 +13,48 @@
     font-weight: 600;
 }
 
-.nafoj-guidance__list > li.is-done {
-    color: rgba(0, 0, 0, 0.35);
-    text-decoration: line-through;
-    text-decoration-color: rgba(0, 0, 0, 0.25);
-}
-
-.nafoj-guidance__list > li.is-done .nafoj-guidance__icon {
-    color: #3c9a5f;
-}
-
-.nafoj-guidance__list > li.is-doing {
-    color: inherit;
-    font-weight: 600;
-}
-
-.nafoj-guidance__list > li.is-doing .nafoj-guidance__icon {
-    color: #d18938;
-}
-
-.nafoj-guidance__list > li.is-done-manual {
-    color: rgba(0, 0, 0, 0.35);
-}
-
-.nafoj-guidance__list > li.is-done-manual > span:not(.nafoj-guidance__icon) {
-    text-decoration: line-through;
-    text-decoration-color: rgba(0, 0, 0, 0.25);
-}
-
-.nafoj-guidance__list > li.is-done-manual .nafoj-guidance__icon::after {
-    content: '✓';
-    color: #3c9a5f;
+.nafoj-guidance__text {
+    flex: 1 1 auto;
 }
 
 .nafoj-guidance__check {
-    margin-left: auto;
     flex: 0 0 auto;
+    margin-left: 8px;
     font-size: 0.9em;
     opacity: 0.75;
     cursor: pointer;
     white-space: nowrap;
 }
 
+.nafoj-guidance__item.is-done .nafoj-guidance__text {
+    color: rgba(0, 0, 0, 0.35);
+    text-decoration: line-through;
+    text-decoration-color: rgba(0, 0, 0, 0.25);
+}
+
+.nafoj-guidance__item.is-done .nafoj-guidance__icon {
+    color: #3c9a5f;
+}
+
+.nafoj-guidance__item.is-doing .nafoj-guidance__text {
+    font-weight: 600;
+}
+
+.nafoj-guidance__item.is-doing .nafoj-guidance__icon {
+    color: #d18938;
+}
+
+.nafoj-guidance__item.is-done-manual .nafoj-guidance__text {
+    color: rgba(0, 0, 0, 0.35);
+    text-decoration: line-through;
+    text-decoration-color: rgba(0, 0, 0, 0.25);
+}
+
+.nafoj-guidance__item.is-done-manual .nafoj-guidance__icon::after {
+    content: '✓';
+    color: #3c9a5f;
+}
+
 .nafoj-guidance__footer {
-    padding-top: 8px;
+    text-align: right;
 }
