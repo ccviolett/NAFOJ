@@ -11,7 +11,7 @@
  * Pure mode/URL helpers live in ./db-url, which has no global.Hydro
  * dependencies and is therefore safe to import from standalone CLI commands.
  */
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import net from 'net';
 import os from 'os';
 import path from 'path';
@@ -66,6 +66,26 @@ export function findFerretDbBin(opts: any = {}): string | null {
     return null;
 }
 
+function verifyFerretDbVersion(bin: string) {
+    let stdout = '';
+    try {
+        stdout = spawnSync(bin, ['--version'], { encoding: 'utf-8' }).stdout || '';
+    } catch {
+        return;
+    }
+    const found = stdout.match(/(\d+\.\d+\.\d+)/)?.[1];
+    if (!found) {
+        logger.warn('Cannot determine FerretDB version of %s', bin);
+        return;
+    }
+    const want = FERRETDB_VERSION.replace(/^v/, '');
+    if (found === want) return;
+    const sameLine = found.split('.').slice(0, 2).join('.') === want.split('.').slice(0, 2).join('.');
+    const msg = `FerretDB version mismatch: found ${found} at ${bin}, expected ${want}.`;
+    if (sameLine) logger.warn(msg);
+    else throw new Error(`${msg} The postgres/sqlite backends need the 1.x line; rebuild with install/ferretdb/build.sh.`);
+}
+
 export async function ensureDbSidecar(opts: any = {}) {
     const mode = resolveDbMode(opts);
     if (mode === 'mongodb') return;
@@ -74,14 +94,22 @@ export async function ensureDbSidecar(opts: any = {}) {
         logger.info('FerretDB sidecar already listening at %s:%d', host, port);
         return;
     }
+    const logPath = path.join(hydroPath, 'ferretdb.log');
+    // Only the primary instance (pm2 worker 0 / standalone) starts the sidecar;
+    // other workers wait instead of racing it for the listen port.
+    if ((process.env.NODE_APP_INSTANCE ?? '0') !== '0') {
+        if (await waitForTcp(host, port, 60000)) return;
+        throw new Error(`FerretDB sidecar did not become ready at ${host}:${port} within 60s; the primary instance should start it. Check ${logPath}`);
+    }
     const bin = findFerretDbBin(opts);
     if (!bin) {
         throw new Error(
             `db mode is "${mode}" but no ferretdb binary was found. `
-            + `Install it with: go install github.com/FerretDB/FerretDB/cmd/ferretdb@${FERRETDB_VERSION} `
+            + `Install it with: install/ferretdb/build.sh (FerretDB ${FERRETDB_VERSION}) `
             + '(or point FERRETDB_BIN / db.ferretdbBin at one). See install/ferretdb/README.md',
         );
     }
+    verifyFerretDbVersion(bin);
     const args = ['--listen-addr', `${host}:${port}`, '--mode', 'normal', '--debug-addr', '127.0.0.1:0'];
     if (mode === 'sqlite') {
         const dir = process.env.FERRETDB_SQLITE_DIR || opts.sqliteDir || path.join(hydroPath, 'sqlite');
@@ -94,7 +122,6 @@ export async function ensureDbSidecar(opts: any = {}) {
             || 'postgres://127.0.0.1:5432/ferretdb?search_path=hydro';
         args.push('--handler', 'postgresql', '--postgresql-url', pgUrl);
     }
-    const logPath = path.join(hydroPath, 'ferretdb.log');
     const logFd = fs.openSync(logPath, 'a');
     logger.info('Starting FerretDB sidecar (%s mode) at %s:%d (log: %s)', mode, host, port, logPath);
     const child = spawn(bin, args, { stdio: ['ignore', logFd, logFd] });

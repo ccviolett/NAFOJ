@@ -9,7 +9,7 @@ import { ValidationError } from '../error';
 import { Logger } from '../logger';
 import { load } from '../options';
 import bus from './bus';
-import { buildMongoUrl, ensureDbSidecar } from './db-sidecar';
+import { buildMongoUrl, ensureDbSidecar, resolveDbMode } from './db-sidecar';
 
 const logger = new Logger('mongo');
 export interface Collections { }
@@ -42,14 +42,16 @@ export class MongoService extends Service {
     }
 
     static async getUrl() {
-        if (process.env.CI) {
+        const opts = load();
+        const mode = resolveDbMode(opts || {});
+        if (process.env.CI && mode === 'mongodb') {
             const { MongoMemoryServer } = require('mongodb-memory-server');
             const mongod = await MongoMemoryServer.create();
             return mongod.getUri();
         }
-        const opts = load();
-        if (!opts) return null;
-        return buildMongoUrl(opts);
+        // Sidecar modes have valid defaults, so they do not require a config file.
+        if (!opts && mode === 'mongodb') return null;
+        return buildMongoUrl(opts || {});
     }
 
     async *[Service.init]() {
