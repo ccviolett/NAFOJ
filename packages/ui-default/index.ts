@@ -175,7 +175,7 @@ export function apply(ctx: Context, config: ReturnType<typeof Config>) {
   ctx.inject(['setting'], (c) => {
     c.setting.PreferenceSetting(
       SettingModel.Setting('setting_display', 'rounded', false, 'boolean', 'Rounded Corners'),
-      SettingModel.Setting('setting_display', 'skipAnimate', true, 'boolean', 'Skip Animation'),
+      SettingModel.Setting('setting_display', 'skipAnimate', false, 'boolean', 'Skip Animation'),
       SettingModel.Setting('setting_display', 'showTimeAgo', true, 'boolean', 'Enable Time Ago'),
       SettingModel.Setting('setting_display', 'fontFamily', 'Open Sans', fontRange, 'Font Family'),
       SettingModel.Setting('setting_display', 'codeFontFamily', 'Source Code Pro', codeFontRange, 'Code Font Family'),
