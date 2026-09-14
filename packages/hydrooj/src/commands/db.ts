@@ -6,7 +6,7 @@ import cac, { CAC } from 'cac';
 import fs from 'fs-extra';
 import { Logger, size, sleep } from '@hydrooj/utils';
 import { hydroPath } from '../options';
-import { buildMongoUrl } from '../service/db-sidecar';
+import { buildMongoUrl } from '../service/db-url';
 const argv = cac().parse();
 
 const logger = new Logger('db');

@@ -1,0 +1,14 @@
+diff --git a/dist/utils.js b/dist/utils.js
+index d61bbaa999e2b29232da11806a69e920ad9028c3..c796aa0c14242ebb283a190bf54c40231105a3bb 100644
+--- a/dist/utils.js
++++ b/dist/utils.js
+@@ -325,7 +325,8 @@ async function createEvaluator(loaderContext, code, options) {
+           dependency = resolvedImportDependencies.get(nodePath);
+         }
+         if (!dependency) {
+-          const dependencies = resolvedDependencies.get(_path.default.normalize(node.filename));
++          const normalizeKey = (p) => _path.default.normalize(String(p).replace(/^[\\/]{2}\?[\\/]/, ""));
++          const dependencies = resolvedDependencies.get(normalizeKey(node.filename));
+           if (dependencies) {
+             dependency = dependencies.find(item => {
+               if (item.originalLineno === node.lineno && item.originalColumn === node.column && item.originalNodePath === nodePath) {
