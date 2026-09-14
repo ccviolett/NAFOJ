@@ -1,0 +1,36 @@
+# NAFOJ: PostgreSQL backend for db.mode=postgres.
+# Hydro itself runs FerretDB as an in-process-managed sidecar binary; this
+# compose file only provisions the PostgreSQL server it talks to.
+#   docker compose -f install/ferretdb/docker-compose.yml up -d
+services:
+  oj-postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ferretdb
+      POSTGRES_PASSWORD: ferretdb
+      POSTGRES_DB: ferretdb
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ferretdb']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional: run FerretDB itself in Docker instead of as Hydro's sidecar.
+  # If you enable this, set FERRETDB_PORT=27019 so Hydro detects the port is
+  # already up and reuses this instance instead of spawning its own.
+  # oj-ferretdb:
+  #   image: ferretdb/ferretdb:1.24.2
+  #   restart: unless-stopped
+  #   depends_on:
+  #     oj-postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     FERRETDB_HANDLER: postgresql
+  #     FERRETDB_POSTGRESQL_URL: postgres://ferretdb:ferretdb@oj-postgres:5432/ferretdb
+  #   ports:
+  #     - '127.0.0.1:27019:27017'

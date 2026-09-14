@@ -6,6 +6,7 @@ import cac, { CAC } from 'cac';
 import fs from 'fs-extra';
 import { Logger, size, sleep } from '@hydrooj/utils';
 import { hydroPath } from '../options';
+import { buildMongoUrl } from '../service/db-sidecar';
 const argv = cac().parse();
 
 const logger = new Logger('db');
@@ -20,11 +21,7 @@ const dir = `${os.tmpdir()}/${Math.random().toString(36).substring(2)}`;
 function getUrl() {
     const dbConfig = fs.readFileSync(path.resolve(hydroPath, 'config.json'), 'utf-8');
     const opts = JSON.parse(dbConfig);
-    if (opts.url || opts.uri) return opts.url || opts.uri;
-    let mongourl = `${opts.protocol || 'mongodb'}://`;
-    if (opts.username) mongourl += `${opts.username}:${opts.password}@`;
-    mongourl += `${opts.host}:${opts.port}/${opts.name}`;
-    return mongourl;
+    return buildMongoUrl(opts);
 }
 
 export function register(cli: CAC) {

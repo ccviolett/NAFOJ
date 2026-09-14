@@ -9,6 +9,7 @@ import { ValidationError } from '../error';
 import { Logger } from '../logger';
 import { load } from '../options';
 import bus from './bus';
+import { buildMongoUrl, ensureDbSidecar } from './db-sidecar';
 
 const logger = new Logger('mongo');
 export interface Collections { }
@@ -48,14 +49,11 @@ export class MongoService extends Service {
         }
         const opts = load();
         if (!opts) return null;
-        let mongourl = `${opts.protocol || 'mongodb'}://`;
-        if (opts.username) mongourl += `${opts.username}:${encodeURIComponent(opts.password)}@`;
-        mongourl += `${opts.host}:${opts.port}/${opts.name}`;
-        if (opts.url || opts.uri) mongourl = opts.url || opts.uri;
-        return mongourl;
+        return buildMongoUrl(opts);
     }
 
     async *[Service.init]() {
+        await ensureDbSidecar(this.config);
         const mongourl = await MongoService.getUrl();
         const url = mongoUri.parse(mongourl);
         this.client = await MongoClient.connect(mongourl);
