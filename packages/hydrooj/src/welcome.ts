@@ -2,17 +2,44 @@ import DomainModel from './model/domain';
 import ProblemModel from './model/problem';
 import RecordModel from './model/record';
 
-const bulletin = `\\
-### 欢迎使用 NAFOJ
+const bulletin = `\
+### 欢迎来到 Hydro ！  
 
-系统已初始化完成。管理员请登录后按照首页的「部署引导」清单完成剩余配置；
-题目配置指南可参考 [Hydro 文档](https://hydro.js.org)。
+当你看到这行字时，说明 Hydro 的基础功能已经正常运行。  
+下一步您应该：
 
-### Welcome to NAFOJ
+- 在右上角注册一个账号。  
+- 回到刚刚的终端，使用 \`hydrooj cli user setSuperAdmin 2\` 将 UID 为 2 的用户设置为超级管理员。  
+- 使用 \`pm2 restart hydrooj\` 重启以使管理员更改立刻生效。  
+- 前往 “题库” 面板，查看创建的示例题目是否正常工作。  
+- 使用超级管理员账号登录，通读 [控制面板 -> 系统设置](/manage/setting) 页面，按需配置。  
 
-Setup is complete. Admins: finish the remaining configuration via the
-onboarding checklist on the homepage. For problem configuration see the
-[Hydro docs](https://hydro.js.org).
+如果您需要可以直接导入的题目，可以 [加入 Hydro 用户群](https://jq.qq.com/?_wv=1027&k=pKYrk4yp) 或是 [从 Hydro 题库下载](https://hydro.ac/d/tk/p) 。  
+您也可以下载 [一本通编程启蒙](https://hydro.ac/ybtbas.zip) 和 [深入浅出程序设计竞赛（基础篇）](https://hydro.ac/srqc.zip) 题库并按照压缩包内说明导入系统。  
+如果您需要题目配置指南，可以 [查看文档](https://hydro.js.org) 或是 [查看配置示例](https://hydro.ac/d/system_test/) 。
+
+当你已经熟悉本系统的操作，可以在 [管理域 > 编辑域资料](/domain/edit) 页面修改这条置顶信息。
+
+### Welcome to Hydro !  
+
+If you see this line, it means Hydro is running normally.  
+Next step you should:
+
+- Register a new account.  
+- Go back to the terminal, use \`hydrooj cli user setSuperAdmin 2\` to set user with UID 2 as super admin.  
+- Use \`pm2 restart hydrooj\` to make the change take effect.  
+- Go to “Problems” panel, check whether the example problem is working properly.  
+- Use super admin account to login, read the [Control panel -> System settings](/manage/setting) page, configure as needed.
+
+If you want to import problems, you can join [Hydro QQ user group](https://jq.qq.com/?_wv=1027&k=pKYrk4yp) 
+or download from [Hydro problem library](https://hydro.ac/d/tk/p) .  
+You can also download [Guide to Competitive Programming](https://hydro.ac/ybtbas.zip)
+and [In-depth Programming Competition (Basics)](https://hydro.ac/srqc.zip) and follow the instructions
+in the zip file to import to the system (Chinese version only).
+If you need problem configuration guide, you can [view user manual](https://hydro.js.org) or 
+[view examples](https://hydro.ac/d/system_test/) .
+
+This message can be modified in [Domain > Edit information](/domain/edit) page.
 `;
 
 const defaultProblem = JSON.stringify({

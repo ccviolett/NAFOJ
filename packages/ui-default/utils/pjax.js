@@ -7,11 +7,6 @@ import NProgress from 'nprogress';
 import Notification from 'vj/components/notification';
 import { request, withTransitionCallback } from './base';
 
-// NAFOJ: sub-pjax navigations are near-instant locally; a progress bar that
-// flickers on every one of them causes motion fatigue. Start at 30%, never
-// trickle, and drop the spinner: fast loads never show anything at all.
-NProgress.configure({ minimum: 0.3, trickle: false, showSpinner: false });
-
 const pjax = {};
 
 let currentState = null;
