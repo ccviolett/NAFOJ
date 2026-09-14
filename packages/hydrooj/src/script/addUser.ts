@@ -13,6 +13,6 @@ export const apply = (ctx: Context) => ctx.addScript(
     async ({ mail, uname, password, asAdmin }) => {
         const uid = await user.create(mail, uname, password);
         if (asAdmin) await user.setSuperAdmin(uid);
-        return uid;
+        return true;
     },
 );
