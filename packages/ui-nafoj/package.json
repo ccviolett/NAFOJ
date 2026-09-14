@@ -1,0 +1,10 @@
+{
+    "name": "@nafoj/ui-sidebar",
+    "version": "0.1.0",
+    "description": "NAFOJ UI customization: replaces the ui-default topbar with a left sidebar",
+    "main": "index.ts",
+    "hydro": {
+        "cli": false
+    },
+    "license": "AGPL-3.0-or-later"
+}
