@@ -9,6 +9,9 @@ param(
 $ErrorActionPreference = 'Stop'
 $src = Join-Path $env:TEMP "ferretdb-src-$Version"
 if (Test-Path $src) { Remove-Item -Recurse -Force $src }
+# Skip LFS objects (website images): the repo's LFS bandwidth budget is often
+# exhausted, and none of them are needed to build the binary.
+$env:GIT_LFS_SKIP_SMUDGE = '1'
 git clone --depth 1 --branch $Version https://github.com/FerretDB/FerretDB.git $src
 if ($LASTEXITCODE -ne 0) { throw 'git clone failed' }
 Set-Content -Path (Join-Path $src 'build/version/version.txt') -Value $Version -NoNewline

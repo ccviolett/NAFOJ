@@ -5,7 +5,9 @@ set -euo pipefail
 VERSION="${1:-v1.24.2}"
 OUT_DIR="${2:-$HOME/.hydro/bin}"
 SRC="$(mktemp -d)/ferretdb-src"
-git clone --depth 1 --branch "$VERSION" https://github.com/FerretDB/FerretDB.git "$SRC"
+# Skip LFS objects (website images): the repo's LFS bandwidth budget is often
+# exhausted, and none of them are needed to build the binary.
+GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 --branch "$VERSION" https://github.com/FerretDB/FerretDB.git "$SRC"
 printf '%s' "$VERSION" > "$SRC/build/version/version.txt"
 mkdir -p "$OUT_DIR"
 (cd "$SRC" && go build -trimpath -o "$OUT_DIR/ferretdb" ./cmd/ferretdb)
