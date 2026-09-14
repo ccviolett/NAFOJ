@@ -184,6 +184,18 @@
     }
 }
 
+/* NAFOJ: pjax content swaps are wrapped in the browser View Transitions API
+ * (ui-default utils/base.ts withTransitionCallback). Its default fade/move
+ * re-animates every changed section on each in-site navigation, which reads
+ * as yet another entrance animation; make the swap instant instead. */
+::view-transition-group(*),
+::view-transition-image-pair(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+    animation: none !important;
+    mix-blend-mode: normal;
+}
+
 /* Accessibility: users asking for reduced motion get a fully static sidebar. */
 @media (prefers-reduced-motion: reduce) {
     .nav,
