@@ -1,4 +1,4 @@
-<link rel="stylesheet" media="all" href="/nafoj/sidebar.css">
+<link rel="stylesheet" media="all" href="/nafoj/sidebar.css?v=2">
 {%- macro nav_item(item) -%}
 <li class="nav__list-item">
   <a href="{{ url(item.name, item.args, query=item.args.query(handler) if typeof(item.args.query) == 'function' else item.args.query or {}) }}" class="nav__item{% if page_name.startsWith(item.args.prefix) %} nav--active{% endif %}">
@@ -7,12 +7,23 @@
 </li>
 {%- endmacro -%}
 
+{# NAFOJ: the logo lives in its own short strip (the first div child of #menu)
+   so ui-default's handleNavbar overflow check (#menu > div height <= 70)
+   never fires and nav items are never folded into the "More" dropdown.
+   The brand list must NOT use nav__list--main, or that JS appends a cloned
+   "More" trigger into the logo row. .nafoj-nav__body is display:contents on
+   mobile (transparent to the original slideout) and a flex column >=601px. #}
 <nav class="nav slideout-menu" id="menu">
-  <div class="row"><div class="columns clearfix">
-    <ol class="nav__list nav__list--main clearfix">
+  <div class="nafoj-nav__spacer"><div class="columns clearfix">
+    <ol class="nav__list nafoj-nav__brand clearfix">
       <li class="nav__list-item">
         <a href="/"><img class="nav__logo" src="{{ ctx.setting.get('ui-default.nav_logo_dark') }}"></a>
       </li>
+    </ol>
+  </div></div>
+  <div class="nafoj-nav__body">
+    <div class="row"><div class="columns clearfix">
+    <ol class="nav__list nav__list--main clearfix">
       {%- for item in overrideNav|default(ui.getNodes('Nav')) -%}{% if item.checker(handler) %}
         {{ nav_item(item) }}
       {% endif %}{%- endfor -%}
@@ -134,6 +145,7 @@
       </li>
     {% endif %}
     </ol>
-  </div></div>
+    </div></div>
+  </div>
 </nav>
 <nav class="nav--shadow"></nav>

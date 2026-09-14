@@ -1,8 +1,25 @@
 /* NAFOJ: transform the ui-default topbar into a left sidebar (pure CSS).
- * Desktop (>=900px) only; below that the original mobile slideout drawer
- * keeps working untouched. Element ids/classes stay the same, so all
- * existing JS (dropdowns, slideout, active state) keeps working. */
-@media (min-width: 900px) {
+ * Desktop (>=601px, Hydro's mobile cutoff) only. Below that the original
+ * mobile slideout drawer keeps working. Element ids/classes stay the same
+ * so dropdowns / slideout / active state keep working.
+ *
+ * handleNavbar in ui-default measures $('#menu').children('div').height()
+ * against 70px (first child only). .nafoj-nav__spacer must stay shorter
+ * than that, or every nav item is moved into the "More" dropdown. */
+
+@media (max-width: 600px) {
+    /* logo is already display:none on mobile; drop the empty brand row */
+    .nafoj-nav__spacer {
+        display: none;
+    }
+
+    /* unwrap so slideout styles still see .nav > .row */
+    .nafoj-nav__body {
+        display: contents;
+    }
+}
+
+@media (min-width: 601px) {
     .nav,
     .hasjs .nav,
     .nojs .nav {
@@ -20,8 +37,44 @@
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
     }
 
-    /* stack the two nav lists vertically */
-    .nav > .row {
+    /* brand strip: first #menu > div; MUST stay <=70px for handleNavbar */
+    .nafoj-nav__spacer {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        max-height: 64px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .nafoj-nav__spacer > .columns {
+        padding: 0 8px;
+    }
+
+    .nafoj-nav__brand {
+        float: none;
+        width: 100%;
+        margin: 0;
+    }
+
+    .nav .nafoj-nav__brand .nav__logo {
+        display: block;
+        margin: 10px auto 8px;
+        max-height: 36px;
+        width: auto;
+    }
+
+    /* nav lists: grow, do not become the measured first child */
+    .nafoj-nav__body {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        min-height: 0;
+        width: 100%;
+    }
+
+    .nafoj-nav__body > .row {
         display: flex;
         flex: 1;
         width: 100%;
@@ -29,7 +82,7 @@
         margin: 0;
     }
 
-    .nav > .row > .columns {
+    .nafoj-nav__body > .row > .columns {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -56,13 +109,7 @@
 
     .nav .nav__list-item {
         margin: 1px 0;
-    }
-
-    .nav .nav__logo {
-        display: block;
-        margin: 14px auto 10px;
-        max-height: 44px;
-        width: auto;
+        float: none;
     }
 
     /* items become sidebar rows; active marker moves from top to left edge */
@@ -92,6 +139,11 @@
         border: 1px solid currentColor;
         border-radius: 16px;
         text-align: center;
+    }
+
+    /* never show the overflow "More" trigger on the sidebar */
+    .nav .nav_more {
+        display: none !important;
     }
 
     /* top strips no longer needed; mobile header stays hidden on desktop */
