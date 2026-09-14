@@ -1,0 +1,49 @@
+<link rel="stylesheet" media="all" href="/nafoj/guidance.css">
+{% if domain.bulletin %}
+  <div class="section">
+    <div class="section__body typo richmedia">
+      {{ domain.bulletin|markdown|safe }}
+    </div>
+  </div>
+{% endif %}
+{# NAFOJ onboarding checklist; super admins only, dismissible via localStorage. #}
+{% if handler.user.hasPriv(PRIV.PRIV_EDIT_SYSTEM) %}
+<div class="section nafoj-guidance" data-guidance-root>
+  <div class="section__header">{{ _('Welcome') }} · NAFOJ 部署引导</div>
+  <ul class="section__body nafoj-guidance__list">
+    <li class="is-done">
+      <span class="nafoj-guidance__icon">✓</span>
+      <span>登录管理员账号（admin，初始密码见部署终端输出）</span>
+    </li>
+    {% if handler.user._udoc.mustChangePassword %}
+    <li class="is-doing">
+      <span class="nafoj-guidance__icon">→</span>
+      <span>修改初始密码（首次登录已强制跳转）：<a href="/home/security">前往安全设置</a></span>
+    </li>
+    {% else %}
+    <li class="is-done">
+      <span class="nafoj-guidance__icon">✓</span>
+      <span>修改初始密码</span>
+    </li>
+    {% endif %}
+    <li data-step="judge">
+      <span class="nafoj-guidance__icon"></span>
+      <span>验证判题链路：打开 <a href="/p/P1000">示例题目 A+B</a> 提交一次，确认评测返回 Accepted</span>
+      <label class="nafoj-guidance__check"><input type="checkbox" data-guidance-check="judge">已完成</label>
+    </li>
+    <li data-step="settings">
+      <span class="nafoj-guidance__icon"></span>
+      <span>通读 <a href="/manage/setting">控制面板 → 系统设置</a>，按需配置（站名、端口、存储等）</span>
+      <label class="nafoj-guidance__check"><input type="checkbox" data-guidance-check="settings">已完成</label>
+    </li>
+    <li data-step="import">
+      <span class="nafoj-guidance__icon"></span>
+      <span>按需导入题库：<a href="/problem/import/fps">FPS 题包导入</a>，或从 Hydro 题库下载</span>
+      <label class="nafoj-guidance__check"><input type="checkbox" data-guidance-check="import">已完成</label>
+    </li>
+  </ul>
+  <div class="section__body nafoj-guidance__footer">
+    <button class="button" type="button" data-guidance-dismiss>我已完成初始化，隐藏引导</button>
+  </div>
+</div>
+{% endif %}
