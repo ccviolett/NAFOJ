@@ -67,4 +67,3 @@ __*
 
 packages/*/public/assets
 node_modules.*
-state.json
