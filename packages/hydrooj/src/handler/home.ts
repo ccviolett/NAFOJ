@@ -220,7 +220,6 @@ class HomeSecurityHandler extends Handler {
             await udoc.checkPassword(current);
         } else await this.user.checkPassword(current);
         await user.setPassword(this.user._id, password);
-        if (this.user._udoc.mustChangePassword) await user.setById(this.user._id, { mustChangePassword: false });
         await token.delByUid(this.user._id);
         this.response.redirect = this.url('user_login');
     }

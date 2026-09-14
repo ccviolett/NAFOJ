@@ -58,7 +58,6 @@ export function findFerretDbBin(opts: any = {}): string | null {
         process.env.FERRETDB_BIN,
         opts.ferretdbBin,
         path.join(hydroPath, 'bin', exe),
-        path.join(os.homedir(), '.hydro', 'bin', exe),
         path.join(goBin, exe),
     ].filter((c) => !!c);
     for (const candidate of candidates) {
