@@ -68,7 +68,7 @@ jobs:
         run: ./install/ferretdb/build.sh
       - name: Install dependencies
         run: |
-          yarn set version 4.13.0
+          corepack enable
           yarn
           node build/prepare.js
       - name: Build
